@@ -29,6 +29,7 @@ import QtQuick 2.5
 import QtQuick.Controls 1.4
 import QtQuick.Layouts 1.2
 import QtQuick.Dialogs 1.2
+import QtQuick.Scene3D 2.0
 import QtQml.Models 2.2
 import QtQml 2.2
 import Qt3D.Core 2.0
@@ -644,10 +645,21 @@ Item {
                 Layout.fillWidth: true
                 Layout.minimumWidth: 100
 
-                EditorViewport {
+                Scene3D {
                     id: editorViewport
                     anchors.fill: parent
-                    scene: editorScene
+                    aspects: ["render", "input", "logic"]
+                    hoverEnabled: true
+                    // Since the aspect engine requires QEntityPtr (i.e. QSharedPointer<QEntity>),
+                    // Scene3D steals the ownership of the entity. This means C++-owned object
+                    // should never be passed directly in to Scene3D.
+                    entity: Entity {}
+                    Component.onCompleted: editorScene.rootEntity.parent = entity
+                    Component.onDestruction: editorScene.rootEntity.parent = null
+                }
+
+                Item {
+                    anchors.fill: parent
 
                     MouseArea {
                         id: viewportMouseArea

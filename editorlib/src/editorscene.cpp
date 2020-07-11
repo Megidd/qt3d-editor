@@ -167,15 +167,14 @@ EditorScene::~EditorScene()
     // Remove all entities recursively to ensure the root item is last one to be deleted
     removeEntity(m_sceneEntity);
 
-    // TODO: Check if it is necessary to delete rootentity and associated components, or do they get
-    // TODO: properly deleted by aspect engine shutdown?
-
     delete m_componentCache;
 
     delete m_dragHandlesTransform;
     delete m_dragHandleRotateTransform;
     delete m_dragHandleTranslateTransform;
     qDeleteAll(m_dragHandleScaleTransforms);
+
+    delete m_rootEntity;
 }
 
 EditorSceneItem *EditorScene::entityItem(Qt3DCore::QEntity *entity) const

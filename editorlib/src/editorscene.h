@@ -78,6 +78,7 @@ class EditorSceneParser;
 class EditorScene : public QObject
 {
     Q_OBJECT
+    Q_PROPERTY(Qt3DCore::QEntity *rootEntity READ rootEntity CONSTANT)
     Q_PROPERTY(EditorSceneItemModel *sceneModel READ sceneModel CONSTANT)
     Q_PROPERTY(Qt3DCore::QEntity *selection READ selection WRITE setSelection NOTIFY selectionChanged)
     Q_PROPERTY(QStringList multiSelectionList READ multiSelectionList NOTIFY multiSelectionListChanged)
