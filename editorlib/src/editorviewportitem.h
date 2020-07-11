@@ -31,7 +31,6 @@
 #include <QtQuick/QQuickFramebufferObject>
 
 class EditorScene;
-class EditorCameraController;
 
 class QOffscreenSurface;
 
@@ -72,7 +71,6 @@ public slots:
 
 private slots:
     void applyRootEntityChange();
-    void handleInputCameraChange();
 
 signals:
     void sceneChanged(EditorScene* scene);
@@ -93,7 +91,6 @@ private:
     Qt3DRender::QRenderAspect *m_renderAspect;
     Qt3DInput::QInputAspect *m_inputAspect;
     Qt3DLogic::QLogicAspect *m_logicAspect;
-    EditorCameraController *m_cameraController;
 
     QOffscreenSurface *m_surface;
 };

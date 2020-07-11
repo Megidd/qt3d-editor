@@ -27,7 +27,6 @@
 ****************************************************************************/
 #include "editorviewportitem.h"
 #include "editorscene.h"
-#include "editorcameracontroller.h"
 
 #include <QOpenGLContext>
 #include <QOpenGLFramebufferObject>
@@ -148,7 +147,6 @@ EditorViewportItem::EditorViewportItem(QQuickItem *parent)
     , m_renderAspect(new Qt3DRender::QRenderAspect(Qt3DRender::QRenderAspect::Synchronous))
     , m_inputAspect(new Qt3DInput::QInputAspect)
     , m_logicAspect(new Qt3DLogic::QLogicAspect)
-    , m_cameraController(nullptr)
     , m_surface(nullptr)
 {
     setFlag(ItemHasContents, true);
@@ -196,11 +194,6 @@ void EditorViewportItem::setScene(EditorScene *scene)
 
     m_scene = scene;
 
-    connect(scene, &EditorScene::activeSceneCameraIndexChanged,
-            this, &EditorViewportItem::handleInputCameraChange);
-    connect(scene, &EditorScene::freeViewChanged,
-            this, &EditorViewportItem::handleInputCameraChange);
-
     emit sceneChanged(scene);
 
     update();
@@ -210,16 +203,6 @@ void EditorViewportItem::applyRootEntityChange()
 {
     if (m_scene != nullptr && m_scene->rootEntity() != m_aspectEngine->rootEntity()) {
         m_aspectEngine->setRootEntity(Qt3DCore::QEntityPtr(m_scene->rootEntity()));
-
-        m_cameraController = new EditorCameraController(this, m_scene->rootEntity());
-        m_cameraController->setCamera(m_scene->inputCamera());
-    }
-}
-
-void EditorViewportItem::handleInputCameraChange()
-{
-    if (m_cameraController) {
-        m_cameraController->setCamera(m_scene->inputCamera());
     }
 }
 
@@ -260,12 +243,7 @@ void EditorViewportItem::geometryChanged(const QRectF &newGeometry, const QRectF
 
 void EditorViewportItem::mousePressEvent(QMouseEvent *event)
 {
-    if (m_cameraController) {
-        m_cameraController->handleMousePress(event);
-        event->accept();
-    } else {
-        event->ignore();
-    }
+    event->accept();
 }
 
 void EditorViewportItem::mouseMoveEvent(QMouseEvent *event)
@@ -275,18 +253,10 @@ void EditorViewportItem::mouseMoveEvent(QMouseEvent *event)
 
 void EditorViewportItem::mouseReleaseEvent(QMouseEvent *event)
 {
-    if (m_cameraController) {
-        m_cameraController->handleMouseRelease(event);
-        event->accept();
-    } else {
-        event->ignore();
-    }
+    event->accept();
 }
 
 void EditorViewportItem::wheelEvent(QWheelEvent *event)
 {
-    if (m_cameraController)
-        m_cameraController->handleWheel(event);
-    else
-        event->ignore();
+    event->accept();
 }

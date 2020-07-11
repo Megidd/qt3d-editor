@@ -25,6 +25,7 @@
 ** $QT_END_LICENSE$
 **
 ****************************************************************************/
+#include "editorcameracontroller.h"
 #include "editorscene.h"
 #include "editorutils.h"
 #include "editorsceneitem.h"
@@ -116,6 +117,7 @@ EditorScene::EditorScene(QObject *parent)
     , m_activeSceneCameraIndex(-1)
     , m_freeView(false)
     , m_freeViewCameraEntity(nullptr)
+    , m_cameraController(nullptr)
     , m_viewport(nullptr)
     , m_undoHandler(new UndoHandler(this))
     , m_helperPlane(nullptr)
@@ -293,6 +295,7 @@ void EditorScene::resetScene()
     setFrameGraphCamera(m_freeViewCameraEntity);
     enableVisibleCameras(m_freeView);
     enableVisibleLights(m_freeView);
+    handleInputCameraChange();
 
     emit freeViewChanged(m_freeView);
 
@@ -467,6 +470,13 @@ Qt3DRender::QCamera *EditorScene::inputCamera() const
         inputCamera =  m_freeViewCameraEntity;
 
     return inputCamera;
+}
+
+void EditorScene::handleInputCameraChange()
+{
+    if (m_cameraController) {
+        m_cameraController->setCamera(inputCamera());
+    }
 }
 
 // Resolves a world position for given viewport position.
@@ -2355,6 +2365,8 @@ void EditorScene::setActiveSceneCameraIndex(int index)
     if (m_freeView)
         enableVisibleCameras(bool(m_sceneCameras.size()));
 
+    handleInputCameraChange();
+
     if (previousIndex != m_activeSceneCameraIndex)
         emit activeSceneCameraIndexChanged(m_activeSceneCameraIndex);
 }
@@ -2375,6 +2387,7 @@ void EditorScene::setFreeView(bool enable)
             setFrameGraphCamera(m_sceneCameras.at(m_activeSceneCameraIndex).cameraEntity);
         enableVisibleCameras(m_freeView);
         enableVisibleLights(m_freeView);
+        handleInputCameraChange();
     }
     // Show / hide light meshes, and notify UI. Need to be emitted always even if it doesn't change,
     // as otherwise the UI can change the checked status of the menu item on click even if
@@ -2412,6 +2425,10 @@ void EditorScene::setViewport(QQuickItem *viewport)
         } else {
             qWarning() << "No Input Settings found, keyboard and mouse events won't be handled";
         }
+
+        delete m_cameraController;
+        m_cameraController = new EditorCameraController(viewport, m_rootEntity);
+        m_cameraController->setCamera(inputCamera());
 
         emit viewportChanged(viewport);
     }
@@ -2998,16 +3015,33 @@ bool EditorScene::eventFilter(QObject *obj, QEvent *event)
         break;
     }
     case QEvent::MouseButtonPress:
-        if (obj == m_viewport)
-            return handleMousePress(static_cast<QMouseEvent *>(event));
+        if (obj == m_viewport) {
+            if (handleMousePress(static_cast<QMouseEvent *>(event)))
+                return true;
+            if (m_cameraController)
+                m_cameraController->handleMousePress(static_cast<QMouseEvent *>(event));
+            return false;
+        }
         break;
     case QEvent::MouseButtonRelease:
-        if (obj == m_viewport)
-            return handleMouseRelease(static_cast<QMouseEvent *>(event));
+        if (obj == m_viewport) {
+            if (handleMouseRelease(static_cast<QMouseEvent *>(event)))
+                return true;
+            if (m_cameraController)
+                m_cameraController->handleMouseRelease(static_cast<QMouseEvent *>(event));
+            return false;
+        }
         break;
     case QEvent::MouseMove:
         if (obj == m_viewport)
             return handleMouseMove(static_cast<QMouseEvent *>(event));
+        break;
+    case QEvent::Wheel:
+        if (obj == m_viewport) {
+            if (m_cameraController)
+                m_cameraController->handleWheel(static_cast<QWheelEvent *>(event));
+            return false;
+        }
         break;
     default:
         break;

@@ -63,6 +63,7 @@ namespace Qt3DExtras {
     class QForwardRenderer;
 }
 
+class EditorCameraController;
 class EditorSceneItemModel;
 class EditorSceneItem;
 class UndoHandler;
@@ -389,6 +390,7 @@ private slots:
     void handleSelectionTransformChange();
 
 private:
+    void handleInputCameraChange();
     void handleCameraAdded(Qt3DRender::QCamera *camera);
     void handleCameraRemoved(Qt3DRender::QCamera *camera);
     void handleLightAdded(Qt3DCore::QEntity *lightEntity);
@@ -460,6 +462,7 @@ private:
     int m_activeSceneCameraIndex;
     bool m_freeView;
     Qt3DRender::QCamera *m_freeViewCameraEntity;
+    EditorCameraController *m_cameraController;
 
     QQuickItem *m_viewport; // Not owned
 
