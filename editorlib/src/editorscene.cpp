@@ -29,7 +29,6 @@
 #include "editorutils.h"
 #include "editorsceneitem.h"
 #include "editorsceneitemcomponentsmodel.h"
-#include "editorviewportitem.h"
 #include "ontopeffect.h"
 #include "undohandler.h"
 
@@ -2392,16 +2391,16 @@ void EditorScene::setHelperArrowsLocal(bool enable)
     }
 }
 
-void EditorScene::setViewport(EditorViewportItem *viewport)
+void EditorScene::setViewport(QQuickItem *viewport)
 {
     if (m_viewport != viewport) {
         if (m_viewport)
             disconnect(m_viewport, 0, this, 0);
 
         m_viewport = viewport;
-        connect(viewport, &EditorViewportItem::heightChanged,
+        connect(viewport, &QQuickItem::heightChanged,
                 this, &EditorScene::handleViewportSizeChange);
-        connect(viewport, &EditorViewportItem::widthChanged,
+        connect(viewport, &QQuickItem::widthChanged,
                 this, &EditorScene::handleViewportSizeChange);
         handleViewportSizeChange();
 

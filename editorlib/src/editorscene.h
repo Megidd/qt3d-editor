@@ -37,6 +37,7 @@
 #include <QtCore/QTranslator>
 #include <QtGui/QVector3D>
 #include <QtGui/QQuaternion>
+#include <QtQuick/QQuickItem>
 #include <Qt3DCore/QNodeId>
 #include <Qt3DCore/QEntity>
 #include <QtQml/QJSValue>
@@ -64,7 +65,6 @@ namespace Qt3DExtras {
 
 class EditorSceneItemModel;
 class EditorSceneItem;
-class EditorViewportItem;
 class UndoHandler;
 class QMouseEvent;
 
@@ -83,7 +83,7 @@ class EditorScene : public QObject
     Q_PROPERTY(bool multiSelection READ multiSelection NOTIFY multiSelectionChanged)
     Q_PROPERTY(QString error READ error NOTIFY errorChanged)
     Q_PROPERTY(int activeSceneCameraIndex READ activeSceneCameraIndex WRITE setActiveSceneCameraIndex NOTIFY activeSceneCameraIndexChanged)
-    Q_PROPERTY(EditorViewportItem *viewport READ viewport WRITE setViewport NOTIFY viewportChanged)
+    Q_PROPERTY(QQuickItem *viewport READ viewport WRITE setViewport NOTIFY viewportChanged)
     Q_PROPERTY(bool freeView READ freeView WRITE setFreeView NOTIFY freeViewChanged)
     Q_PROPERTY(bool helperArrowsLocal READ helperArrowsLocal WRITE setHelperArrowsLocal NOTIFY helperArrowsLocalChanged)
     Q_PROPERTY(QAbstractItemModel *sceneCamerasModel READ sceneCamerasModel NOTIFY sceneCamerasModelChanged)
@@ -322,8 +322,8 @@ public:
         return EditorUtils::lockTransformPropertyName();
     }
 
-    void setViewport(EditorViewportItem *viewport);
-    EditorViewportItem *viewport() const { return m_viewport; }
+    void setViewport(QQuickItem *viewport);
+    QQuickItem *viewport() const { return m_viewport; }
 
     QAbstractItemModel *sceneCamerasModel() { return &m_sceneCamerasModel; }
     UndoHandler *undoHandler() const { return m_undoHandler; }
@@ -361,7 +361,7 @@ signals:
     void errorChanged(const QString &error);
     void freeViewChanged(bool enabled);
     void activeSceneCameraIndexChanged(int index);
-    void viewportChanged(EditorViewportItem *viewport);
+    void viewportChanged(QQuickItem *viewport);
     void sceneCamerasModelChanged();
     void languageChanged(const QString &language);
     void translationChanged(const QString &translation);
@@ -461,7 +461,7 @@ private:
     bool m_freeView;
     Qt3DRender::QCamera *m_freeViewCameraEntity;
 
-    EditorViewportItem *m_viewport; // Not owned
+    QQuickItem *m_viewport; // Not owned
 
     // m_sceneCamerasModel is simply a list of camera entity names for UI.
     // Indexes match m_sceneCameras list indexes.

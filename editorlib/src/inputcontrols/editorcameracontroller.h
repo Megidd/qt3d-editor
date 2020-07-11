@@ -32,6 +32,7 @@
 #include <Qt3DCore/QEntity>
 #include <QtGui/QVector3D>
 #include <QtGui/QWheelEvent>
+#include <QtQuick/QQuickItem>
 
 QT_BEGIN_NAMESPACE
 
@@ -53,14 +54,12 @@ class QAxis;
 class QAnalogAxisInput;
 }
 
-class EditorViewportItem;
-
 class EditorCameraController : public Qt3DCore::QEntity
 {
     Q_OBJECT
 
 public:
-    explicit EditorCameraController(EditorViewportItem *viewport,
+    explicit EditorCameraController(QQuickItem *viewport,
                                     Qt3DCore::QNode *parent = nullptr);
     ~EditorCameraController();
 
@@ -101,7 +100,7 @@ private:
     float m_orbitSpeed;
     float m_translateSpeed;
     float m_wheelSpeed;
-    EditorViewportItem *m_viewport;
+    QQuickItem *m_viewport;
 };
 
 QT_END_NAMESPACE

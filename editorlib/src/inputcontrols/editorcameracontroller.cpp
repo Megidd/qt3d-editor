@@ -28,7 +28,6 @@
 
 #include "editorcameracontroller.h"
 #include "editorutils.h"
-#include "editorviewportitem.h"
 #include <Qt3DRender/QCamera>
 #include <Qt3DInput/QAxis>
 #include <Qt3DInput/QAnalogAxisInput>
@@ -40,7 +39,7 @@
 #include <Qt3DInput/QMouseHandler>
 #include <Qt3DLogic/QFrameAction>
 
-EditorCameraController::EditorCameraController(EditorViewportItem *viewport,
+EditorCameraController::EditorCameraController(QQuickItem *viewport,
                                                Qt3DCore::QNode *parent)
     : Qt3DCore::QEntity(parent)
     , m_camera(nullptr)
