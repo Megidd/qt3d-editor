@@ -28,7 +28,6 @@
 #include "qt3dsceneeditor.h"
 #include "undohandler.h"
 #include "editorscene.h"
-#include "editorviewportitem.h"
 #include "editorsceneitemmodel.h"
 #include "editorsceneitem.h"
 #include "editorsceneitemcomponentsmodel.h"
@@ -44,7 +43,6 @@ QT3D_SCENE_EDITOR_EXPORT void register3DSceneEditorQML()
     static bool registered = false;
     if (!registered) {
         qmlRegisterType<EditorScene>("com.theqtcompany.SceneEditor3D", 1, 0, "EditorScene");
-        qmlRegisterType<EditorViewportItem>("com.theqtcompany.SceneEditor3D", 1, 0, "EditorViewport");
         qmlRegisterUncreatableType<EditorSceneItemModel>("com.theqtcompany.SceneEditor3D", 1, 0, "EditorSceneItemModel", "Created by EditorScene");
         qmlRegisterUncreatableType<EditorSceneItem>("com.theqtcompany.SceneEditor3D", 1, 0, "EditorSceneItem", "Created by EditorScene");
         qmlRegisterUncreatableType<EditorSceneItemComponentsModel>("com.theqtcompany.SceneEditor3D", 1, 0, "EditorSceneItemComponentsModel", "Created by EditorSceneItem");

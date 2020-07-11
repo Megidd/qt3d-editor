@@ -7,7 +7,6 @@ DEFINES += QT3D_SCENE_EDITOR_LIBRARY
 QT += qml quick widgets 3dcore 3drender 3dextras 3dinput 3dlogic 3dquick 3drender-private
 
 SOURCES += src/qt3dsceneeditor.cpp \
-    src/editorviewportitem.cpp \
     src/editorscene.cpp \
     src/editorutils.cpp \
     src/editorsceneitemmodel.cpp \
@@ -53,7 +52,6 @@ INCLUDEPATH += src src/components src/undohandler src/materials src/inputcontrol
 
 HEADERS += \
     src/qt3dsceneeditor.h \
-    src/editorviewportitem.h \
     src/editorscene.h \
     src/editorutils.h \
     src/editorsceneitemmodel.h \
