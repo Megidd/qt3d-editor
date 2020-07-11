@@ -1863,6 +1863,7 @@ void EditorScene::createRootEntity()
     m_renderer = new Qt3DExtras::QForwardRenderer();
     m_renderer->setClearColor(Qt::lightGray);
     m_renderSettings->setActiveFrameGraph(m_renderer);
+    m_renderSettings->setRenderPolicy(Qt3DRender::QRenderSettings::OnDemand);
 
     // Setting the FrameGraph to actual root entity to protect it from accidental removal
     m_rootEntity->addComponent(m_renderSettings);
