@@ -149,7 +149,6 @@ EditorViewportItem::EditorViewportItem(QQuickItem *parent)
     , m_inputAspect(new Qt3DInput::QInputAspect)
     , m_logicAspect(new Qt3DLogic::QLogicAspect)
     , m_cameraController(nullptr)
-    , m_inputEnabled(true)
     , m_surface(nullptr)
 {
     setFlag(ItemHasContents, true);
@@ -177,20 +176,6 @@ EditorViewportItem::~EditorViewportItem()
 EditorScene *EditorViewportItem::scene() const
 {
     return m_scene;
-}
-
-bool EditorViewportItem::inputEnabled() const
-{
-    return m_inputEnabled;
-}
-
-void EditorViewportItem::setInputEnabled(bool enable)
-{
-    if (enable != m_inputEnabled) {
-        m_inputEnabled = enable;
-        handleInputCameraChange();
-        emit inputEnabledChanged(m_inputEnabled);
-    }
 }
 
 void EditorViewportItem::handleWindowChanged(QQuickWindow *win)
@@ -227,18 +212,14 @@ void EditorViewportItem::applyRootEntityChange()
         m_aspectEngine->setRootEntity(Qt3DCore::QEntityPtr(m_scene->rootEntity()));
 
         m_cameraController = new EditorCameraController(this, m_scene->rootEntity());
-        if (m_inputEnabled)
-            m_cameraController->setCamera(m_scene->inputCamera());
+        m_cameraController->setCamera(m_scene->inputCamera());
     }
 }
 
 void EditorViewportItem::handleInputCameraChange()
 {
     if (m_cameraController) {
-        if (m_inputEnabled)
-            m_cameraController->setCamera(m_scene->inputCamera());
-        else
-            m_cameraController->setCamera(nullptr);
+        m_cameraController->setCamera(m_scene->inputCamera());
     }
 }
 
@@ -279,7 +260,7 @@ void EditorViewportItem::geometryChanged(const QRectF &newGeometry, const QRectF
 
 void EditorViewportItem::mousePressEvent(QMouseEvent *event)
 {
-    if (m_inputEnabled && m_cameraController) {
+    if (m_cameraController) {
         m_cameraController->handleMousePress(event);
         event->accept();
     } else {
@@ -289,15 +270,12 @@ void EditorViewportItem::mousePressEvent(QMouseEvent *event)
 
 void EditorViewportItem::mouseMoveEvent(QMouseEvent *event)
 {
-    if (m_inputEnabled)
-        event->accept();
-    else
-        event->ignore();
+    event->accept();
 }
 
 void EditorViewportItem::mouseReleaseEvent(QMouseEvent *event)
 {
-    if (m_inputEnabled && m_cameraController) {
+    if (m_cameraController) {
         m_cameraController->handleMouseRelease(event);
         event->accept();
     } else {
@@ -307,7 +285,7 @@ void EditorViewportItem::mouseReleaseEvent(QMouseEvent *event)
 
 void EditorViewportItem::wheelEvent(QWheelEvent *event)
 {
-    if (m_inputEnabled && m_cameraController)
+    if (m_cameraController)
         m_cameraController->handleWheel(event);
     else
         event->ignore();

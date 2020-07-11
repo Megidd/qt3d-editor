@@ -59,15 +59,12 @@ class EditorViewportItem : public QQuickFramebufferObject
 {
     Q_OBJECT
     Q_PROPERTY(EditorScene* scene READ scene WRITE setScene NOTIFY sceneChanged)
-    Q_PROPERTY(bool inputEnabled READ inputEnabled WRITE setInputEnabled NOTIFY inputEnabledChanged)
 public:
     EditorViewportItem(QQuickItem *parent = 0);
     ~EditorViewportItem();
 
     EditorScene* scene() const;
 
-    bool inputEnabled() const;
-    void setInputEnabled(bool enable);
     void handleWindowChanged(QQuickWindow *win);
 
 public slots:
@@ -79,7 +76,6 @@ private slots:
 
 signals:
     void sceneChanged(EditorScene* scene);
-    void inputEnabledChanged(bool enabled);
 
 protected:
     Renderer *createRenderer() const Q_DECL_OVERRIDE;
@@ -99,7 +95,6 @@ private:
     Qt3DLogic::QLogicAspect *m_logicAspect;
     EditorCameraController *m_cameraController;
 
-    bool m_inputEnabled;
     QOffscreenSurface *m_surface;
 };
 
